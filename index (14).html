@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SESI Saúde - Agendamento de Exames</title>
+</head>
+<body>
+    <div class="header">
+        <h1>SESI Saúde</h1>
+    </div>
+    <div class="container">
+        <h2>Solicitação de Agendamento de Exames Ocupacionais</h2>
+        <div class="section cnpj-search">
+            <div class="cnpj-company-row">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="cnpjInput">CNPJ <span class="required">*</span></label>
+                        <div class="input-tooltip">
+                            <input type="text" id="cnpjInput" placeholder="Digite o CNPJ da Empresa" maxlength="18" required aria-describedby="cnpjHelp">
+                            <span class="tooltip" data-tooltip="Digite o CNPJ da empresa (14 dígitos). Exemplo: 12.345.678/0001-99">?</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="companyName">Nome da Empresa</label>
+                        <div class="input-tooltip">
+                            <input type="text" id="companyName" readonly aria-describedby="companyNameHelp">
+                            <span id="companyNameHelp" class="tooltip" data-tooltip="Nome completo da empresa, preenchido automaticamente após busca do CNPJ">?</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="searchCNPJ()" class="nav-button" aria-label="Buscar CNPJ">Buscar <span id="cnpjLoading" class="loading" style="display: none;">⏳</span></button>
+            <div id="cnpjResult" role="alert"></div>
+            <label for="isConstruction">É Obra?
+                <select id="isConstruction" onchange="toggleConstructionFields()">
+                    <option value="no">Não</option>
+                    <option value="yes">Sim</option>
+                </select>
+            </label>
+            <div class="construction-fields" id="constructionFields">
+                <label for="ceiCnoNumber">Número do CEI/CNO
+                    <input type="text" id="ceiCnoNumber" placeholder="Digite o CEI ou CNO">
+                </label>
+                <label for="constructionName">Nome da Obra
+                    <input type="text" id="constructionName" placeholder="Digite o nome da obra">
+                </label>
+            </div>
+            <label for="pcmsoType">Tipo de PCMSO
+                <select id="pcmsoType">
+                    <option value="Selecione">Selecione</option>
+                    <option value="sesi">PCMSO do SESI</option>
+                    <option value="terceiros">PCMSO de Terceiros</option>
+                </select>
+            </label>
+            <label for="authorizeExams">A Empresa autoriza realização de Exames ocupacionais solicitados pelo Médico do Trabalho no momento do atendimento?
+                <div class="input-tooltip">
+                    <select id="authorizeExams" aria-describedby="authorizeExamsHelp">
+                        <option value="Selecione">Selecione</option>
+                        <option value="yes">Sim</option>
+                        <option value="no">Não</option>
+                    </select>
+                    <span class="tooltip" data-tooltip="Indica se a empresa permite exames adicionais solicitados pelo médico durante o atendimento">?</span>
+                </div>
+            </label>
+        </div>
+        <div class="section responsible-section">
+            <h3>Responsável pela Solicitação</h3>
+            <div class="responsible-fields">
+                <label for="responsibleName">Nome
+                    <input type="text" id="responsibleName" placeholder="Opcional">
+                </label>
+                <label for="responsiblePhone">Telefone
+                    <input type="text" id="responsiblePhone" placeholder="Opcional">
+                </label>
+                <label for="responsibleEmail">E-mail
+                    <input type="email" id="responsibleEmail" placeholder="Opcional">
+                </label>
+            </div>
+        </div>
+        <div class="section unit-selection">
+            <h3>Unidade para Atendimentos</h3>
+            <label for="unitSelect">
+                <select id="unitSelect">
+                    <option value="selecione">Selecione</option>
+                    <option value="santoAmaro">SESI Saúde - Santo Amaro</option>
+                    <option value="paulista">SESI Paulista - Núcleo de Saúde</option>
+                </select>
+            </label>
+        </div>
+        <div class="section">
+            <h3>Colaboradores</h3>
+            <p>Insira os dados dos trabalhadores e a data desejada para atendimento. Pelo menos um CPF é obrigatório.</p>
+            <div class="table-wrapper">
+                <table class="schedule-table" id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>CPF <span class="required">*</span></th>
+                            <th>RG</th>
+                            <th>Nome</th>
+                            <th>Data de Nascimento</th>
+                            <th>Setor</th>
+                            <th>Função</th>
+                            <th>Tipo de Exame <span class="required">*</span></th>
+                            <th>Data de Admissão</th>
+                            <th>Exame conforme o PCMSO?</th>
+                            <th>Quais Condições</th>
+                            <th>Observações</th>
+                            <th>Data Desejada <span class="required">*</span></th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody">
+                        <tr>
+                            <td>
+                                <input type="text" class="cpf-input" value="" placeholder="Digite o CPF (ex: 123.456.789-00)" maxlength="14" required aria-describedby="cpfHelp">
+                                <span class="error-message" style="display: none;"></span>
+                            </td>
+                            <td><input type="text" value="" placeholder="Digite o RG"></td>
+                            <td><input type="text" value=""></td>
+                            <td><input type="date" value=""></td>
+                            <td><input type="text" value=""></td>
+                            <td><input type="text" value=""></td>
+                            <td>
+                                <select required class="exam-type">
+                                    <option value="Selecione">Selecione</option>
+                                    <option value="admissional">Admissional</option>
+                                    <option value="demissional">Demissional</option>
+                                    <option value="periodico">Periódico</option>
+                                    <option value="retorno">Retorno ao Trabalho</option>
+                                    <option value="pontual">Atendimento Pontual</option>
+                                </select>
+                            </td>
+                            <td><input type="date" value="" class="admission-date"></td>
+                            <td>
+                                <select>
+                                    <option value="Selecione">Selecione</option>
+                                    <option value="yes">Sim</option>
+                                    <option value="no">Não</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select>
+                                    <option value="Selecione">Selecione</option>
+                                    <option value="exames_aso">Exames + ASO</option>
+                                    <option value="apenas_exames">Apenas Exames</option>
+                                    <option value="apenas_aso">Apenas ASO</option>
+                                </select>
+                            </td>
+                            <td><textarea rows="2" placeholder="Observações opcionais"></textarea></td>
+                            <td><input type="date" value="" required></td>
+                            <td><button class="remove-button" onclick="removeRow(this)" aria-label="Remover linha">🗑️</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="cpfError" style="color: #e53e3e; margin-top: 10px;" role="alert"></div>
+            </div>
+            <div class="button-group">
+                <button class="nav-button add-button" onclick="addRow()" aria-label="Adicionar novo agendamento">Adicionar Agendamento</button>
+                <button class="nav-button add-button" onclick="testPopup()" aria-label="Confirmar Agendamento">Confirmar Agendamento</button>
+                <button class="nav-button exit-button" onclick="window.location.href='https://pe.sesi.org.br/'" aria-label="Sair do formulário">Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Pop-up -->
+    <div id="confirmPopup" class="popup-overlay" role="dialog" aria-labelledby="confirmPopupTitle">
+        <div class="popup-content">
+            <h3 id="confirmPopupTitle">Confirmar Envio</h3>
+            <p>Deseja realmente enviar a solicitação de agendamento?</p>
+            <div class="popup-buttons">
+                <button class="nav-button" onclick="confirmSubmission()" aria-label="Confirmar envio">Sim</button>
+                <button class="nav-button exit-button" onclick="closeConfirmPopup()" aria-label="Cancelar envio">Não</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Pop-up -->
+    <div id="successPopup" class="popup-overlay" role="dialog" aria-labelledby="successPopupTitle">
+        <div class="popup-content">
+            <h3 id="successPopupTitle">Sucesso</h3>
+            <p>Solicitação de agendamento enviada com sucesso!</p>
+            <div class="popup-buttons">
+                <button class="nav-button" onclick="closeSuccessPopup()" aria-label="Fechar mensagem de sucesso">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CPF Error Pop-up -->
+    <div id="cpfErrorPopup" class="popup-overlay" role="dialog" aria-labelledby="cpfErrorPopupTitle">
+        <div class="popup-content">
+            <h3 id="cpfErrorPopupTitle">Erro</h3>
+            <p>Por favor, preencha pelo menos um CPF válido antes de Confirmar a Solicitação de Agendamento!</p>
+            <div class="popup-buttons">
+                <button class="nav-button" onclick="closeCpfErrorPopup()" aria-label="Fechar mensagem de erro">OK</button>
+            </div>
+        </div>
+    </div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+        color: #1a202c;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 2200px;
+        margin: 20px auto;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .container:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+    .header {
+        background: linear-gradient(90deg, #2a6fd6, #4a90e2);
+        color: #fff;
+        padding: 20px;
+        border-radius: 12px 12px 0 0;
+        text-align: center;
+        margin: -30px -30px 30px -30px;
+        animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .container h2 {
+        font-size: 1.8em;
+        color: #1a202c;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    h3 {
+        font-size: 1.4em;
+        color: #1a202c;
+        margin-bottom: 15px;
+    }
+    .required {
+        color: #e53e3e;
+        font-weight: bold;
+    }
+    .nav-button {
+        padding: 12px 25px;
+        background-color: #4a90e2;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 1.5;
+        min-width: 200px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    }
+    .nav-button:hover {
+        background-color: #357abd;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(53, 122, 189, 0.3);
+    }
+    .nav-button:focus {
+        outline: 2px solid #2a6fd6;
+        outline-offset: 2px;
+    }
+    .add-button {
+        padding: 12px 25px;
+        min-width: 200px;
+    }
+    .exit-button {
+        background-color: #e53e3e;
+        padding: 12px 25px;
+        min-width: 200px;
+    }
+    .exit-button:hover {
+        background-color: #c53030;
+        box-shadow: 0 4px 8px rgba(197, 48, 48, 0.3);
+    }
+    .section {
+        margin: 20px 0;
+        padding: 25px;
+        border: 1px solid #edf2f7;
+        border-radius: 10px;
+        background-color: #ffffff;
+        transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .section:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+    .cnpj-search label, .responsible-section label, .unit-selection label, .cnpj-search select {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #2d3748;
+    }
+    .cnpj-company-row {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .input-row {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .input-tooltip {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .cnpj-search input, .responsible-section input, .unit-selection select, .cnpj-search select {
+        padding: 12px;
+        border: 1px solid #cbd5e0;
+        border-radius: 6px;
+        font-size: 16px;
+        width: 100%;
+        max-width: 300px;
+        box-sizing: border-box;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .cnpj-search input#companyName {
+        min-width: 400px;
+        max-width: 1000px;
+        width: auto;
+        display: inline-block;
+    }
+    .cnpj-search input:focus, .responsible-section input:focus, .unit-selection select:focus, .cnpj-search select:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+        outline: none;
+    }
+    .cnpj-search input[readonly], .schedule-table input:disabled {
+        background-color: #f7fafc;
+        cursor: not-allowed;
+    }
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        color: #4a90e2;
+        cursor: help;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+    .tooltip::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: calc(100% + 5px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #2d3748;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        display: none;
+        z-index: 10;
+    }
+    .tooltip:hover::after {
+        display: block;
+    }
+    .cnpj-search button, .add-button {
+        margin: 10px 0;
+    }
+    .schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        background-color: #fff;
+        table-layout: fixed;
+    }
+    .table-wrapper {
+        overflow-x: auto;
+        margin-left: 0;
+        width: 100%;
+    }
+    .schedule-table th, .schedule-table td {
+        border: 1px solid #edf2f7;
+        padding: 12px;
+        text-align: left;
+        vertical-align: middle;
+        font-size: 14px;
+    }
+    .schedule-table th {
+        background-color: #f7fafc;
+        color: #1a202c;
+        font-weight: 600;
+    }
+    .schedule-table tr:hover td {
+        background-color: #f0f5ff;
+    }
+    .schedule-table td {
+        word-wrap: break-word;
+        position: relative;
+    }
+    .schedule-table input, .schedule-table select, .schedule-table textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cbd5e0;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 14px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .schedule-table input:focus, .schedule-table select:focus, .schedule-table textarea:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+        outline: none;
+    }
+    .schedule-table input.cpf-input.invalid, .schedule-table input:invalid, .schedule-table select:invalid {
+        border-color: #e53e3e;
+        box-shadow: 0 0 5px rgba(229, 62, 62, 0.3);
+    }
+    .error-message {
+        color: #e53e3e;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+    .schedule-table td:nth-child(1) input, /* CPF */
+    .schedule-table td:nth-child(2) input, /* RG */
+    .schedule-table td:nth-child(3) input, /* Nome */
+    .schedule-table td:nth-child(4) input, /* Data de Nascimento */
+    .schedule-table td:nth-child(6) input, /* Função */
+    .schedule-table td:nth-child(7) select, /* Tipo de Exame */
+    .schedule-table td:nth-child(8) input, /* Data de Admissão */
+    .schedule-table td:nth-child(9) select, /* Exame conforme o PCMSO? */
+    .schedule-table td:nth-child(10) select /* Quais Condições */ {
+        min-width: 150px;
+    }
+    .schedule-table th:nth-child(1), /* CPF */
+    .schedule-table th:nth-child(2), /* RG */
+    .schedule-table th:nth-child(3), /* Nome */
+    .schedule-table th:nth-child(4), /* Data de Nascimento */
+    .schedule-table th:nth-child(6), /* Função */
+    .schedule-table th:nth-child(7), /* Tipo de Exame */
+    .schedule-table th:nth-child(8), /* Data de Admissão */
+    .schedule-table th:nth-child(9), /* Exame conforme o PCMSO? */
+    .schedule-table th:nth-child(10) /* Quais Condições */ {
+        width: 150px;
+    }
+    .schedule-table th:nth-child(5), /* Setor */
+    .schedule-table th:nth-child(11), /* Observações */
+    .schedule-table th:nth-child(12) /* Data Desejada */ {
+        width: 120px;
+    }
+    .schedule-table th:nth-child(13) /* Ação */ {
+        width: 60px;
+    }
+    .button-group {
+        margin-top: 20px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    .remove-button {
+        padding: 6px 10px;
+        font-size: 16px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e53e3e;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    }
+    .remove-button:hover {
+        background-color: #c53030;
+        transform: scale(1.15);
+        box-shadow: 0 4px 8px rgba(197, 48, 48, 0.3);
+    }
+    .responsible-section {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .responsible-fields {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    .responsible-section label {
+        margin: 0;
+    }
+    p {
+        color: #4a5568;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+    .construction-fields {
+        display: none;
+        margin-top: 10px;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    .construction-fields.active {
+        display: flex;
+    }
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeInOverlay 0.3s ease-in;
+    }
+    .popup-overlay.active {
+        display: flex !important;
+        visibility: visible !important;
+    }
+    @keyframes fadeInOverlay {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .popup-content {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        animation: slideIn 0.3s ease-in;
+    }
+    @keyframes slideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .popup-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    .loading {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+    #textWidthCalculator {
+        position: absolute;
+        visibility: hidden;
+        white-space: nowrap;
+        font-size: 16px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 12px;
+    }
+    @media (max-width: 768px) {
+        .container {
+            max-width: 100%;
+            padding: 15px;
+            margin: 10px;
+        }
+        .cnpj-company-row {
+            flex-direction: column;
+        }
+        .input-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .input-group {
+            width: 100%;
+        }
+        .cnpj-search input {
+            max-width: 100%;
+        }
+        .schedule-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin: 0;
+        }
+        .table-wrapper {
+            margin-left: 0;
+            width: 100%;
+        }
+        .schedule-table th, .schedule-table td {
+            min-width: 120px;
+        }
+        .responsible-fields, .construction-fields {
+            flex-direction: column;
+        }
+        .button-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .nav-button, .add-button, .exit-button {
+            width: 100%;
+            min-width: unset;
+            padding: 12px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cnpj-search input#companyName {
+            max-width: 100%;
+        }
+    }
+</style>
+<script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+        return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                    row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                    headerRowIndex = 0;
+                }
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error('Error loading file data:', e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+    }
+
+    function adjustCompanyNameWidth() {
+        console.log('adjustCompanyNameWidth called');
+        const companyNameInput = document.getElementById('companyName');
+        if (!companyNameInput) {
+            console.error('companyName input not found');
+            return;
+        }
+        const text = companyNameInput.value || ' ';
+        let textWidthCalculator = document.getElementById('textWidthCalculator');
+        if (!textWidthCalculator) {
+            textWidthCalculator = document.createElement('span');
+            textWidthCalculator.id = 'textWidthCalculator';
+            document.body.appendChild(textWidthCalculator);
+        }
+        textWidthCalculator.textContent = text;
+        const textWidth = textWidthCalculator.offsetWidth;
+        const minWidth = 400;
+        const maxWidth = 1000;
+        const calculatedWidth = Math.min(Math.max(textWidth, minWidth), maxWidth);
+        companyNameInput.style.width = `${calculatedWidth}px`;
+        console.log(`Company name: "${text}", Calculated width: ${calculatedWidth}px`);
+    }
+
+    function formatCNPJ(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 14) value = value.slice(0, 14);
+        if (value.length <= 2) {
+            input.value = value;
+        } else if (value.length <= 5) {
+            input.value = value.replace(/(\d{2})(\d+)/, '$1.$2');
+        } else if (value.length <= 8) {
+            input.value = value.replace(/(\d{2})(\d{3})(\d+)/, '$1.$2.$3');
+        } else if (value.length <= 12) {
+            input.value = value.replace(/(\d{2})(\d{3})(\d{3})(\d+)/, '$1.$2.$3/$4');
+        } else {
+            input.value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d+)/, '$1.$2.$3/$4-$5');
+        }
+    }
+
+    function formatCPF(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+        if (value.length <= 3) {
+            input.value = value;
+        } else if (value.length <= 6) {
+            input.value = value.replace(/(\d{3})(\d+)/, '$1.$2');
+        } else if (value.length <= 9) {
+            input.value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+        } else {
+            input.value = value.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1.$2.$3-$4');
+        }
+    }
+
+    function validateCPF(cpf) {
+        cpf = cpf.replace(/[^\d]/g, '');
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+        let sum = 0;
+        for (let i = 0; i < 9; i++) {
+            sum += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        let mod = 11 - (sum % 11);
+        let digit1 = mod >= 10 ? 0 : mod;
+        sum = 0;
+        for (let i = 0; i < 10; i++) {
+            sum += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        mod = 11 - (sum % 11);
+        let digit2 = mod >= 10 ? 0 : mod;
+        return digit1 === parseInt(cpf.charAt(9)) && digit2 === parseInt(cpf.charAt(10));
+    }
+
+    function validateAllCPFs() {
+        const cpfInputs = document.querySelectorAll('.cpf-input');
+        const errorDiv = document.getElementById('cpfError');
+        let allValid = true;
+        let invalidCPFs = [];
+
+        cpfInputs.forEach((input, index) => {
+            const errorSpan = input.parentElement.querySelector('.error-message');
+            const cpf = input.value.replace(/[^\d]/g, '');
+            if (cpf && !validateCPF(cpf)) {
+                input.classList.add('invalid');
+                errorSpan.textContent = 'CPF inválido';
+                errorSpan.style.display = 'block';
+                allValid = false;
+                invalidCPFs.push(index + 1);
+            } else {
+                input.classList.remove('invalid');
+                errorSpan.textContent = '';
+                errorSpan.style.display = 'none';
+            }
+        });
+
+        if (!allValid) {
+            errorDiv.textContent = `CPF inválido na(s) linha(s): ${invalidCPFs.join(', ')}`;
+        } else {
+            errorDiv.textContent = '';
+        }
+
+        console.log('validateAllCPFs result:', allValid, 'Invalid CPFs:', invalidCPFs);
+        return allValid;
+    }
+
+    function addCPFValidationListeners() {
+        const cpfInputs = document.querySelectorAll('.cpf-input');
+        cpfInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                formatCPF(input);
+                validateAllCPFs();
+            });
+            input.addEventListener('blur', validateAllCPFs);
+        });
+    }
+
+    function toggleAdmissionDate() {
+        console.log('toggleAdmissionDate called');
+        const examTypes = document.querySelectorAll('.exam-type');
+        examTypes.forEach(select => {
+            const row = select.closest('tr');
+            const admissionDateInput = row.querySelector('.admission-date');
+            if (select.value === 'admissional') {
+                admissionDateInput.disabled = true;
+                admissionDateInput.value = '';
+                console.log(`Row ${row.rowIndex}: Disabled admission date for Admissional`);
+            } else {
+                admissionDateInput.disabled = false;
+                console.log(`Row ${row.rowIndex}: Enabled admission date`);
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM fully loaded');
+        addCPFValidationListeners();
+        const cnpjInput = document.getElementById('cnpjInput');
+        if (cnpjInput) {
+            cnpjInput.addEventListener('input', () => formatCNPJ(cnpjInput));
+        } else {
+            console.error('cnpjInput not found');
+        }
+        toggleAdmissionDate();
+        const examTypes = document.querySelectorAll('.exam-type');
+        examTypes.forEach(select => {
+            select.addEventListener('change', toggleAdmissionDate);
+        });
+        console.log('confirmPopup exists:', !!document.getElementById('confirmPopup'));
+        console.log('successPopup exists:', !!document.getElementById('successPopup'));
+        console.log('cpfErrorPopup exists:', !!document.getElementById('cpfErrorPopup'));
+    });
+
+    function validateTableRows() {
+        console.log('Validating table rows...');
+        const rows = document.querySelectorAll('#scheduleBody tr');
+        let allValid = true;
+        let errorMessages = [];
+        let hasFilledRow = false;
+
+        rows.forEach((row, index) => {
+            const cpfInput = row.querySelector('.cpf-input');
+            const examType = row.querySelector('.exam-type');
+            const desiredDate = row.querySelector('input[type="date"]:nth-child(2)');
+            const errorSpan = cpfInput.parentElement.querySelector('.error-message');
+
+            if (cpfInput.value.trim()) {
+                hasFilledRow = true;
+                if (!validateCPF(cpfInput.value)) {
+                    allValid = false;
+                    errorSpan.textContent = 'CPF inválido';
+                    errorSpan.style.display = 'block';
+                    errorMessages.push(`Linha ${index + 1}: CPF inválido`);
+                } else if (examType.value === 'Selecione') {
+                    allValid = false;
+                    examType.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Tipo de Exame não selecionado`);
+                } else if (!desiredDate.value) {
+                    allValid = false;
+                    desiredDate.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Data Desejada não preenchida`);
+                } else {
+                    errorSpan.textContent = '';
+                    errorSpan.style.display = 'none';
+                    examType.classList.remove('invalid');
+                    desiredDate.classList.remove('invalid');
+                }
+            }
+        });
+
+        if (!hasFilledRow) {
+            allValid = false;
+            errorMessages.push('Pelo menos uma linha deve conter um CPF válido');
+        }
+
+        const errorDiv = document.getElementById('cpfError');
+        if (!allValid) {
+            errorDiv.textContent = errorMessages.join('; ');
+        } else {
+            errorDiv.textContent = '';
+        }
+
+        console.log('Table validation result:', allValid, 'Has filled row:', hasFilledRow, 'Errors:', errorMessages);
+        return allValid;
+    }
+
+    function testPopup() {
+        console.log('testPopup called');
+        const cpfInputs = document.querySelectorAll('.cpf-input');
+        const hasValidCPF = Array.from(cpfInputs).some(input => input.value.trim() && validateCPF(input.value));
+        console.log('Has valid CPF:', hasValidCPF);
+
+        if (!hasValidCPF) {
+            const cpfErrorPopup = document.getElementById('cpfErrorPopup');
+            if (!cpfErrorPopup) {
+                console.error('cpfErrorPopup element not found');
+                alert('Erro: Pop-up de erro de CPF não encontrado. Por favor, contate o suporte.');
+                return;
+            }
+            cpfErrorPopup.classList.add('active');
+            console.log('cpfErrorPopup shown');
+            return;
+        }
+
+        const confirmPopup = document.getElementById('confirmPopup');
+        if (!confirmPopup) {
+            console.error('confirmPopup element not found');
+            alert('Erro: Pop-up de confirmação não encontrado. Por favor, contate o suporte.');
+            return;
+        }
+        confirmPopup.classList.add('active');
+        console.log('confirmPopup shown via testPopup');
+    }
+
+    function closeCpfErrorPopup() {
+        console.log('closeCpfErrorPopup called');
+        const cpfErrorPopup = document.getElementById('cpfErrorPopup');
+        if (!cpfErrorPopup) {
+            console.error('cpfErrorPopup element not found');
+            alert('Erro: Pop-up de erro de CPF não encontrado. Por favor, contate o suporte.');
+            return;
+        }
+        cpfErrorPopup.classList.remove('active');
+        console.log('cpfErrorPopup hidden');
+    }
+
+    function submitSchedule() {
+        console.log('submitSchedule called');
+        const confirmPopup = document.getElementById('confirmPopup');
+        if (!confirmPopup) {
+            console.error('confirmPopup element not found');
+            alert('Erro: Pop-up de confirmação não encontrado. Por favor, contate o suporte.');
+            return;
+        }
+
+        const cpfInputs = document.querySelectorAll('.cpf-input');
+        const hasAtLeastOneCPF = Array.from(cpfInputs).some(input => input.value.trim() !== '');
+        console.log('Has at least one CPF:', hasAtLeastOneCPF);
+        if (!hasAtLeastOneCPF) {
+            console.log('Validation failed: No CPF provided');
+            alert('Por favor, preencha pelo menos um CPF válido antes de confirmar o agendamento.');
+            return;
+        }
+
+        if (!validateTableRows()) {
+            console.log('Validation failed: Table rows invalid');
+            alert('Por favor, corrija os campos obrigatórios (CPF válido, Tipo de Exame e Data Desejada) antes de confirmar.');
+            return;
+        }
+
+        const companyName = document.getElementById('companyName').value;
+        console.log('Company name:', companyName);
+        if (!companyName) {
+            console.log('Validation failed: No company name');
+            alert('Por favor, insira e valide um CNPJ válido antes de confirmar o agendamento.');
+            return;
+        }
+
+        console.log('All validations passed, showing confirmPopup');
+        confirmPopup.classList.add('active');
+    }
+
+    function confirmSubmission() {
+        console.log('confirmSubmission called');
+        const confirmPopup = document.getElementById('confirmPopup');
+        const successPopup = document.getElementById('successPopup');
+        if (!confirmPopup || !successPopup) {
+            console.error('Popup elements not found:', { confirmPopup, successPopup });
+            alert('Erro: Um ou mais pop-ups não foram encontrados. Por favor, contate o suporte.');
+            return;
+        }
+
+        // Clear only the schedule table
+        const tbody = document.getElementById('scheduleBody');
+        tbody.innerHTML = `
+            <tr>
+                <td>
+                    <input type="text" class="cpf-input" value="" placeholder="Digite o CPF (ex: 123.456.789-00)" maxlength="14" required aria-describedby="cpfHelp">
+                    <span class="error-message" style="display: none;"></span>
+                </td>
+                <td><input type="text" value="" placeholder="Digite o RG"></td>
+                <td><input type="text" value=""></td>
+                <td><input type="date" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td>
+                    <select required class="exam-type">
+                        <option value="Selecione">Selecione</option>
+                        <option value="admissional">Admissional</option>
+                        <option value="demissional">Demissional</option>
+                        <option value="periodico">Periódico</option>
+                        <option value="retorno">Retorno ao Trabalho</option>
+                        <option value="pontual">Atendimento Pontual</option>
+                    </select>
+                </td>
+                <td><input type="date" value="" class="admission-date"></td>
+                <td>
+                    <select>
+                        <option value="Selecione">Selecione</option>
+                        <option value="yes">Sim</option>
+                        <option value="no">Não</option>
+                    </select>
+                </td>
+                <td>
+                    <select>
+                        <option value="Selecione">Selecione</option>
+                        <option value="exames_aso">Exames + ASO</option>
+                        <option value="apenas_exames">Apenas Exames</option>
+                        <option value="apenas_aso">Apenas ASO</option>
+                    </select>
+                </td>
+                <td><textarea rows="2" placeholder="Observações opcionais"></textarea></td>
+                <td><input type="date" value="" required></td>
+                <td><button class="remove-button" onclick="removeRow(this)" aria-label="Remover linha">🗑️</button></td>
+            </tr>
+        `;
+        document.getElementById('cpfError').textContent = '';
+        addCPFValidationListeners();
+        toggleAdmissionDate();
+        document.querySelectorAll('.exam-type').forEach(select => {
+            select.addEventListener('change', toggleAdmissionDate);
+        });
+        console.log('Schedule table cleared, other form data preserved');
+
+        confirmPopup.classList.remove('active');
+        successPopup.classList.add('active');
+        console.log('confirmPopup hidden, successPopup shown');
+    }
+
+    function closeConfirmPopup() {
+        console.log('closeConfirmPopup called');
+        const confirmPopup = document.getElementById('confirmPopup');
+        if (!confirmPopup) {
+            console.error('confirmPopup element not found');
+            alert('Erro: Pop-up de confirmação não encontrado. Por favor, contate o suporte.');
+            return;
+        }
+        confirmPopup.classList.remove('active');
+        console.log('confirmPopup hidden');
+    }
+
+    function closeSuccessPopup() {
+        console.log('closeSuccessPopup called');
+        const successPopup = document.getElementById('successPopup');
+        if (!successPopup) {
+            console.error('successPopup element not found');
+            alert('Erro: Pop-up de sucesso não encontrado. Por favor, contate o suporte.');
+            return;
+        }
+        successPopup.classList.remove('active');
+        console.log('successPopup hidden');
+    }
+
+    function addRow() {
+        const tbody = document.getElementById('scheduleBody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>
+                <input type="text" class="cpf-input" value="" placeholder="Digite o CPF (ex: 123.456.789-00)" maxlength="14" required aria-describedby="cpfHelp">
+                <span class="error-message" style="display: none;"></span>
+            </td>
+            <td><input type="text" value="" placeholder="Digite o RG"></td>
+            <td><input type="text" value=""></td>
+            <td><input type="date" value=""></td>
+            <td><input type="text" value=""></td>
+            <td><input type="text" value=""></td>
+            <td>
+                <select required class="exam-type">
+                    <option value="Selecione">Selecione</option>
+                    <option value="admissional">Admissional</option>
+                    <option value="demissional">Demissional</option>
+                    <option value="periodico">Periódico</option>
+                    <option value="retorno">Retorno ao Trabalho</option>
+                    <option value="pontual">Atendimento Pontual</option>
+                </select>
+            </td>
+            <td><input type="date" value="" class="admission-date"></td>
+            <td>
+                <select>
+                    <option value="Selecione">Selecione</option>
+                    <option value="yes">Sim</option>
+                    <option value="no">Não</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option value="Selecione">Selecione</option>
+                    <option value="exames_aso">Exames + ASO</option>
+                    <option value="apenas_exames">Apenas Exames</option>
+                    <option value="apenas_aso">Apenas ASO</option>
+                </select>
+            </td>
+            <td><textarea rows="2" placeholder="Observações opcionais"></textarea></td>
+            <td><input type="date" value="" required></td>
+            <td><button class="remove-button" onclick="removeRow(this)" aria-label="Remover linha">🗑️</button></td>
+        `;
+        tbody.appendChild(newRow);
+        addCPFValidationListeners();
+        toggleAdmissionDate();
+        const newSelect = newRow.querySelector('.exam-type');
+        newSelect.addEventListener('change', toggleAdmissionDate);
+    }
+
+    function removeRow(button) {
+        const row = button.parentElement.parentElement;
+        if (document.querySelectorAll('#scheduleBody tr').length > 1) {
+            row.parentElement.removeChild(row);
+            validateAllCPFs();
+        } else {
+            alert('Pelo menos uma linha deve permanecer na tabela.');
+        }
+    }
+
+    function searchCNPJ() {
+        console.log('searchCNPJ called');
+        const cnpjInput = document.getElementById('cnpjInput');
+        const resultDiv = document.getElementById('cnpjResult');
+        const companyNameInput = document.getElementById('companyName');
+        const loadingSpinner = document.getElementById('cnpjLoading');
+        if (!cnpjInput || !resultDiv || !companyNameInput || !loadingSpinner) {
+            console.error('CNPJ elements not found:', { cnpjInput, resultDiv, companyNameInput, loadingSpinner });
+            alert('Erro: Elementos do formulário CNPJ não encontrados. Por favor, contate o suporte.');
+            return;
+        }
+
+        const cnpj = cnpjInput.value.replace(/[^\d]/g, '');
+        if (!cnpj || cnpj.length !== 14) {
+            resultDiv.innerHTML = '<p style="color: #e53e3e;">CNPJ inválido. Use o formato 12.345.678/0001-99.</p>';
+            companyNameInput.value = '';
+            adjustCompanyNameWidth();
+            return;
+        }
+
+        loadingSpinner.style.display = 'inline';
+        const apiUrl = `https://brasilapi.com.br/api/cnpj/v1/${cnpj}`;
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na consulta ao CNPJ');
+                }
+                return response.json();
+            })
+            .then(data => {
+                loadingSpinner.style.display = 'none';
+                if (data && data.razao_social) {
+                    resultDiv.innerHTML = `<p style="color: #2d3748;">Status: ${data.descricao_situacao_cadastral || 'Não disponível'}</p>`;
+                    companyNameInput.value = data.razao_social;
+                    adjustCompanyNameWidth();
+                } else {
+                    resultDiv.innerHTML = '<p style="color: #e53e3e;">Nenhum dado encontrado para este CNPJ.</p>';
+                    companyNameInput.value = '';
+                    adjustCompanyNameWidth();
+                }
+            })
+            .catch(error => {
+                loadingSpinner.style.display = 'none';
+                resultDiv.innerHTML = '<p style="color: #e53e3e;">Erro ao consultar CNPJ. Verifique sua conexão ou tente novamente.</p>';
+                companyNameInput.value = '';
+                adjustCompanyNameWidth();
+                console.error('CNPJ fetch error:', error);
+            });
+    }
+
+    function toggleConstructionFields() {
+        const isConstruction = document.getElementById('isConstruction').value;
+        const constructionFields = document.getElementById('constructionFields');
+        if (!constructionFields) {
+            console.error('constructionFields not found');
+            return;
+        }
+        if (isConstruction === 'yes') {
+            constructionFields.classList.add('active');
+        } else {
+            constructionFields.classList.remove('active');
+        }
+    }
+</script>
+</body>
+</html>
