@@ -22,9 +22,9 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label for="companyName">Nome da Empresa</label>
+                        <label for="companyName">Nome da Empresa <span class="required">*</span></label>
                         <div class="input-tooltip">
-                            <input type="text" id="companyName" readonly aria-describedby="companyNameHelp">
+                            <input type="text" id="companyName" readonly required aria-describedby="companyNameHelp">
                             <span id="companyNameHelp" class="tooltip" data-tooltip="Nome completo da empresa, preenchido automaticamente após busca do CNPJ">?</span>
                         </div>
                     </div>
@@ -32,30 +32,31 @@
             </div>
             <button onclick="searchCNPJ()" class="nav-button" aria-label="Buscar CNPJ">Buscar <span id="cnpjLoading" class="loading" style="display: none;">⏳</span></button>
             <div id="cnpjResult" role="alert"></div>
-            <label for="isConstruction">É Obra?
-                <select id="isConstruction" onchange="toggleConstructionFields()">
+            <label for="isConstruction">É Obra? <span class="required">*</span>
+                <select id="isConstruction" onchange="toggleConstructionFields()" required>
+                    <option value="selecione">Selecione</option>
                     <option value="no">Não</option>
                     <option value="yes">Sim</option>
                 </select>
             </label>
             <div class="construction-fields" id="constructionFields">
-                <label for="ceiCnoNumber">Número do CEI/CNO
-                    <input type="text" id="ceiCnoNumber" placeholder="Digite o CEI ou CNO">
+                <label for="ceiCnoNumber">Número do CEI/CNO <span class="required">*</span>
+                    <input type="text" id="ceiCnoNumber" placeholder="Digite o CEI ou CNO" required>
                 </label>
-                <label for="constructionName">Nome da Obra
-                    <input type="text" id="constructionName" placeholder="Digite o nome da obra">
+                <label for="constructionName">Nome da Obra <span class="required">*</span>
+                    <input type="text" id="constructionName" placeholder="Digite o nome da obra" required>
                 </label>
             </div>
-            <label for="pcmsoType">Tipo de PCMSO
-                <select id="pcmsoType">
+            <label for="pcmsoType">Tipo de PCMSO <span class="required">*</span>
+                <select id="pcmsoType" required>
                     <option value="Selecione">Selecione</option>
                     <option value="sesi">PCMSO do SESI</option>
                     <option value="terceiros">PCMSO de Terceiros</option>
                 </select>
             </label>
-            <label for="authorizeExams">A Empresa autoriza realização de Exames ocupacionais solicitados pelo Médico do Trabalho no momento do atendimento?
+            <label for="authorizeExams">A Empresa autoriza realização de Exames ocupacionais solicitados pelo Médico do Trabalho no momento do atendimento? <span class="required">*</span>
                 <div class="input-tooltip">
-                    <select id="authorizeExams" aria-describedby="authorizeExamsHelp">
+                    <select id="authorizeExams" required aria-describedby="authorizeExamsHelp">
                         <option value="Selecione">Selecione</option>
                         <option value="yes">Sim</option>
                         <option value="no">Não</option>
@@ -67,26 +68,27 @@
         <div class="section responsible-section">
             <h3>Responsável pela Solicitação</h3>
             <div class="responsible-fields">
-                <label for="responsibleName">Nome
-                    <input type="text" id="responsibleName" placeholder="Solicitante Responsável">
+                <label for="responsibleName">Nome <span class="required">*</span>
+                    <input type="text" id="responsibleName" placeholder="Solicitante Responsável" required>
                 </label>
-                <label for="responsiblePhone">Telefone
-                    <input type="text" id="responsiblePhone" placeholder="Contato da Empresa">
+                <label for="responsiblePhone">Telefone <span class="required">*</span>
+                    <input type="text" id="responsiblePhone" placeholder="Contato da Empresa" required>
                 </label>
-                <label for="responsibleEmail">E-mail
-                    <input type="email" id="responsibleEmail" placeholder="E-mail da Empresa">
+                <label for="responsibleEmail">E-mail <span class="required">*</span>
+                    <input type="email" id="responsibleEmail" placeholder="E-mail da Empresa" required>
                 </label>
             </div>
         </div>
         <div class="section unit-selection">
-            <h3>Unidade para Atendimentos</h3>
+            <h3>Unidade para Atendimentos <span class="required">*</span></h3>
             <label for="unitSelect">
-                <select id="unitSelect">
+                <select id="unitSelect" required>
                     <option value="selecione">Selecione</option>
                     <option value="santoAmaro">SESI Saúde - Santo Amaro</option>
                     <option value="paulista">SESI Paulista - Núcleo de Saúde</option>
                 </select>
             </label>
+            <span class="error-message" id="unitSelectError" style="display: none; color: #e53e3e; font-size: 12px; margin-top: 5px;">Por favor, selecione uma unidade válida.</span>
         </div>
         <div class="section">
             <h3>Colaboradores</h3>
@@ -96,15 +98,15 @@
                     <thead>
                         <tr>
                             <th>CPF <span class="required">*</span></th>
-                            <th>RG</th>
-                            <th>Nome</th>
-                            <th>Data de Nascimento</th>
-                            <th>Setor</th>
-                            <th>Função</th>
+                            <th>RG <span class="required">*</span></th>
+                            <th>Nome <span class="required">*</span></th>
+                            <th>Data de Nascimento <span class="required">*</span></th>
+                            <th>Setor <span class="required">*</span></th>
+                            <th>Função <span class="required">*</span></th>
                             <th>Tipo de Exame <span class="required">*</span></th>
-                            <th>Data de Admissão</th>
-                            <th>Exame conforme o PCMSO?</th>
-                            <th>Quais Condições</th>
+                            <th>Data de Admissão <span class="required">*</span></th>
+                            <th>Exame conforme o PCMSO? <span class="required">*</span></th>
+                            <th>Quais Condições <span class="required">*</span></th>
                             <th>Observações</th>
                             <th>Data Desejada <span class="required">*</span></th>
                             <th>Ação</th>
@@ -116,11 +118,11 @@
                                 <input type="text" class="cpf-input" value="" placeholder="Digite o CPF (ex: 123.456.789-00)" maxlength="14" required aria-describedby="cpfHelp">
                                 <span class="error-message" style="display: none;"></span>
                             </td>
-                            <td><input type="text" value="" placeholder="Digite o RG"></td>
-                            <td><input type="text" value=""></td>
-                            <td><input type="date" value=""></td>
-                            <td><input type="text" value=""></td>
-                            <td><input type="text" value=""></td>
+                            <td><input type="text" value="" placeholder="Digite o RG" required></td>
+                            <td><input type="text" value="" required></td>
+                            <td><input type="date" value="" required></td>
+                            <td><input type="text" value="" required></td>
+                            <td><input type="text" value="" required></td>
                             <td>
                                 <select required class="exam-type">
                                     <option value="Selecione">Selecione</option>
@@ -131,16 +133,16 @@
                                     <option value="pontual">Atendimento Pontual</option>
                                 </select>
                             </td>
-                            <td><input type="date" value="" class="admission-date"></td>
+                            <td><input type="date" value="" required class="admission-date"></td>
                             <td>
-                                <select>
+                                <select required>
                                     <option value="Selecione">Selecione</option>
                                     <option value="yes">Sim</option>
                                     <option value="no">Não</option>
                                 </select>
                             </td>
                             <td>
-                                <select>
+                                <select required>
                                     <option value="Selecione">Selecione</option>
                                     <option value="exames_aso">Exames + ASO</option>
                                     <option value="apenas_exames">Apenas Exames</option>
@@ -157,8 +159,8 @@
             </div>
             <div class="button-group">
                 <button class="nav-button add-button" onclick="addRow()" aria-label="Adicionar novo agendamento">Adicionar Agendamento</button>
-                <button class="nav-button add-button" onclick="testPopup()" aria-label="Confirmar Agendamento">Confirmar Agendamento</button>
-                <button class="nav-button exit-button" onclick="window.location.href='https://pe.sesi.org.br/'" aria-label="Sair do formulário">Sair</button>
+                <button class="nav-button add-button" onclick="submitSchedule()" aria-label="Confirmar Agendamento">Confirmar Agendamento</button>
+                <button class="nav-button add-button exit-button" onclick="window.location.href='https://pe.sesi.org.br/'" aria-label="Sair do formulário">Sair</button>
             </div>
         </div>
     </div>
@@ -277,13 +279,16 @@
     .add-button {
         padding: 12px 25px;
         min-width: 200px;
+        background-color: #4a90e2;
     }
-    .exit-button {
+    .add-button:hover {
+        background-color: #357abd;
+        box-shadow: 0 4px 8px rgba(53, 122, 189, 0.3);
+    }
+    .add-button.exit-button {
         background-color: #e53e3e;
-        padding: 12px 25px;
-        min-width: 100px;
     }
-    .exit-button:hover {
+    .add-button.exit-button:hover {
         background-color: #c53030;
         box-shadow: 0 4px 8px rgba(197, 48, 48, 0.3);
     }
@@ -350,6 +355,20 @@
     .cnpj-search input[readonly], .schedule-table input:disabled {
         background-color: #f7fafc;
         cursor: not-allowed;
+    }
+    .unit-selection select:invalid {
+        border-color: #e53e3e;
+        box-shadow: 0 0 5px rgba(229, 62, 62, 0.3);
+    }
+    .unit-selection select:focus:invalid {
+        border-color: #e53e3e;
+        box-shadow: 0 0 5px rgba(229, 62, 62, 0.5);
+    }
+    .error-message {
+        color: #e53e3e;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
     }
     .tooltip {
         position: relative;
@@ -428,12 +447,6 @@
     .schedule-table input.cpf-input.invalid, .schedule-table input:invalid, .schedule-table select:invalid {
         border-color: #e53e3e;
         box-shadow: 0 0 5px rgba(229, 62, 62, 0.3);
-    }
-    .error-message {
-        color: #e53e3e;
-        font-size: 12px;
-        margin-top: 5px;
-        display: block;
     }
     .schedule-table td:nth-child(1) input, /* CPF */
     .schedule-table td:nth-child(2) input, /* RG */
@@ -786,24 +799,28 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM fully loaded');
-        addCPFValidationListeners();
-        const cnpjInput = document.getElementById('cnpjInput');
-        if (cnpjInput) {
-            cnpjInput.addEventListener('input', () => formatCNPJ(cnpjInput));
-        } else {
-            console.error('cnpjInput not found');
+    function validateUnitSelection() {
+        console.log('validateUnitSelection called');
+        const unitSelect = document.getElementById('unitSelect');
+        const errorSpan = document.getElementById('unitSelectError');
+        
+        if (!unitSelect || !errorSpan) {
+            console.error('unitSelect or unitSelectError element not found');
+            return false;
         }
-        toggleAdmissionDate();
-        const examTypes = document.querySelectorAll('.exam-type');
-        examTypes.forEach(select => {
-            select.addEventListener('change', toggleAdmissionDate);
-        });
-        console.log('confirmPopup exists:', !!document.getElementById('confirmPopup'));
-        console.log('successPopup exists:', !!document.getElementById('successPopup'));
-        console.log('cpfErrorPopup exists:', !!document.getElementById('cpfErrorPopup'));
-    });
+
+        if (unitSelect.value === 'selecione') {
+            unitSelect.classList.add('invalid');
+            errorSpan.textContent = 'Por favor, selecione uma unidade válida.';
+            errorSpan.style.display = 'block';
+            return false;
+        } else {
+            unitSelect.classList.remove('invalid');
+            errorSpan.textContent = '';
+            errorSpan.style.display = 'none';
+            return true;
+        }
+    }
 
     function validateTableRows() {
         console.log('Validating table rows...');
@@ -816,6 +833,15 @@
             const cpfInput = row.querySelector('.cpf-input');
             const examType = row.querySelector('.exam-type');
             const desiredDate = row.querySelector('input[type="date"]:nth-child(2)');
+            const rgInput = row.querySelector('input[type="text"]:nth-child(2)');
+            const nameInput = row.querySelector('input[type="text"]:nth-child(3)');
+            const birthDate = row.querySelector('input[type="date"]:nth-child(4)');
+            const sectorInput = row.querySelector('input[type="text"]:nth-child(5)');
+            const functionInput = row.querySelector('input[type="text"]:nth-child(6)');
+            const admissionDate = row.querySelector('input[type="date"]:nth-child(8)');
+            const pcmsoSelect = row.querySelector('select:nth-child(9)');
+            const conditionsSelect = row.querySelector('select:nth-child(10)');
+            const observations = row.querySelector('textarea');
             const errorSpan = cpfInput.parentElement.querySelector('.error-message');
 
             if (cpfInput.value.trim()) {
@@ -825,10 +851,42 @@
                     errorSpan.textContent = 'CPF inválido';
                     errorSpan.style.display = 'block';
                     errorMessages.push(`Linha ${index + 1}: CPF inválido`);
+                } else if (!rgInput.value.trim()) {
+                    allValid = false;
+                    rgInput.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: RG não preenchido`);
+                } else if (!nameInput.value.trim()) {
+                    allValid = false;
+                    nameInput.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Nome não preenchido`);
+                } else if (!birthDate.value) {
+                    allValid = false;
+                    birthDate.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Data de Nascimento não preenchida`);
+                } else if (!sectorInput.value.trim()) {
+                    allValid = false;
+                    sectorInput.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Setor não preenchido`);
+                } else if (!functionInput.value.trim()) {
+                    allValid = false;
+                    functionInput.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Função não preenchida`);
                 } else if (examType.value === 'Selecione') {
                     allValid = false;
                     examType.classList.add('invalid');
                     errorMessages.push(`Linha ${index + 1}: Tipo de Exame não selecionado`);
+                } else if (!admissionDate.value && examType.value !== 'admissional') {
+                    allValid = false;
+                    admissionDate.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Data de Admissão não preenchida`);
+                } else if (pcmsoSelect.value === 'Selecione') {
+                    allValid = false;
+                    pcmsoSelect.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Exame conforme o PCMSO? não selecionado`);
+                } else if (conditionsSelect.value === 'Selecione') {
+                    allValid = false;
+                    conditionsSelect.classList.add('invalid');
+                    errorMessages.push(`Linha ${index + 1}: Quais Condições não selecionado`);
                 } else if (!desiredDate.value) {
                     allValid = false;
                     desiredDate.classList.add('invalid');
@@ -836,7 +894,15 @@
                 } else {
                     errorSpan.textContent = '';
                     errorSpan.style.display = 'none';
+                    rgInput.classList.remove('invalid');
+                    nameInput.classList.remove('invalid');
+                    birthDate.classList.remove('invalid');
+                    sectorInput.classList.remove('invalid');
+                    functionInput.classList.remove('invalid');
                     examType.classList.remove('invalid');
+                    admissionDate.classList.remove('invalid');
+                    pcmsoSelect.classList.remove('invalid');
+                    conditionsSelect.classList.remove('invalid');
                     desiredDate.classList.remove('invalid');
                 }
             }
@@ -858,46 +924,6 @@
         return allValid;
     }
 
-    function testPopup() {
-        console.log('testPopup called');
-        const cpfInputs = document.querySelectorAll('.cpf-input');
-        const hasValidCPF = Array.from(cpfInputs).some(input => input.value.trim() && validateCPF(input.value));
-        console.log('Has valid CPF:', hasValidCPF);
-
-        if (!hasValidCPF) {
-            const cpfErrorPopup = document.getElementById('cpfErrorPopup');
-            if (!cpfErrorPopup) {
-                console.error('cpfErrorPopup element not found');
-                alert('Erro: Pop-up de erro de CPF não encontrado. Por favor, contate o suporte.');
-                return;
-            }
-            cpfErrorPopup.classList.add('active');
-            console.log('cpfErrorPopup shown');
-            return;
-        }
-
-        const confirmPopup = document.getElementById('confirmPopup');
-        if (!confirmPopup) {
-            console.error('confirmPopup element not found');
-            alert('Erro: Pop-up de confirmação não encontrado. Por favor, contate o suporte.');
-            return;
-        }
-        confirmPopup.classList.add('active');
-        console.log('confirmPopup shown via testPopup');
-    }
-
-    function closeCpfErrorPopup() {
-        console.log('closeCpfErrorPopup called');
-        const cpfErrorPopup = document.getElementById('cpfErrorPopup');
-        if (!cpfErrorPopup) {
-            console.error('cpfErrorPopup element not found');
-            alert('Erro: Pop-up de erro de CPF não encontrado. Por favor, contate o suporte.');
-            return;
-        }
-        cpfErrorPopup.classList.remove('active');
-        console.log('cpfErrorPopup hidden');
-    }
-
     function submitSchedule() {
         console.log('submitSchedule called');
         const confirmPopup = document.getElementById('confirmPopup');
@@ -907,21 +933,31 @@
             return;
         }
 
+        // Validate CPF inputs
         const cpfInputs = document.querySelectorAll('.cpf-input');
-        const hasAtLeastOneCPF = Array.from(cpfInputs).some(input => input.value.trim() !== '');
+        const hasAtLeastOneCPF = Array.from(cpfInputs).some(input => input.value.trim() && validateCPF(input.value));
         console.log('Has at least one CPF:', hasAtLeastOneCPF);
         if (!hasAtLeastOneCPF) {
-            console.log('Validation failed: No CPF provided');
-            alert('Por favor, preencha pelo menos um CPF válido antes de confirmar o agendamento.');
+            console.log('Validation failed: No valid CPF provided');
+            document.getElementById('cpfErrorPopup').classList.add('active');
             return;
         }
 
+        // Validate unit selection
+        if (!validateUnitSelection()) {
+            console.log('Validation failed: No valid unit selected');
+            alert('Por favor, selecione uma unidade válida antes de confirmar.');
+            return;
+        }
+
+        // Validate table rows
         if (!validateTableRows()) {
             console.log('Validation failed: Table rows invalid');
-            alert('Por favor, corrija os campos obrigatórios (CPF válido, Tipo de Exame e Data Desejada) antes de confirmar.');
+            alert('Por favor, corrija os campos obrigatórios antes de confirmar.');
             return;
         }
 
+        // Validate company name
         const companyName = document.getElementById('companyName').value;
         console.log('Company name:', companyName);
         if (!companyName) {
@@ -952,11 +988,11 @@
                     <input type="text" class="cpf-input" value="" placeholder="Digite o CPF (ex: 123.456.789-00)" maxlength="14" required aria-describedby="cpfHelp">
                     <span class="error-message" style="display: none;"></span>
                 </td>
-                <td><input type="text" value="" placeholder="Digite o RG"></td>
-                <td><input type="text" value=""></td>
-                <td><input type="date" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
+                <td><input type="text" value="" placeholder="Digite o RG" required></td>
+                <td><input type="text" value="" required></td>
+                <td><input type="date" value="" required></td>
+                <td><input type="text" value="" required></td>
+                <td><input type="text" value="" required></td>
                 <td>
                     <select required class="exam-type">
                         <option value="Selecione">Selecione</option>
@@ -967,16 +1003,16 @@
                         <option value="pontual">Atendimento Pontual</option>
                     </select>
                 </td>
-                <td><input type="date" value="" class="admission-date"></td>
+                <td><input type="date" value="" required class="admission-date"></td>
                 <td>
-                    <select>
+                    <select required>
                         <option value="Selecione">Selecione</option>
                         <option value="yes">Sim</option>
                         <option value="no">Não</option>
                     </select>
                 </td>
                 <td>
-                    <select>
+                    <select required>
                         <option value="Selecione">Selecione</option>
                         <option value="exames_aso">Exames + ASO</option>
                         <option value="apenas_exames">Apenas Exames</option>
@@ -1025,6 +1061,18 @@
         console.log('successPopup hidden');
     }
 
+    function closeCpfErrorPopup() {
+        console.log('closeCpfErrorPopup called');
+        const cpfErrorPopup = document.getElementById('cpfErrorPopup');
+        if (!cpfErrorPopup) {
+            console.error('cpfErrorPopup element not found');
+            alert('Erro: Pop-up de erro de CPF não encontrado. Por favor, contate o suporte.');
+            return;
+        }
+        cpfErrorPopup.classList.remove('active');
+        console.log('cpfErrorPopup hidden');
+    }
+
     function addRow() {
         const tbody = document.getElementById('scheduleBody');
         const newRow = document.createElement('tr');
@@ -1033,11 +1081,11 @@
                 <input type="text" class="cpf-input" value="" placeholder="Digite o CPF (ex: 123.456.789-00)" maxlength="14" required aria-describedby="cpfHelp">
                 <span class="error-message" style="display: none;"></span>
             </td>
-            <td><input type="text" value="" placeholder="Digite o RG"></td>
-            <td><input type="text" value=""></td>
-            <td><input type="date" value=""></td>
-            <td><input type="text" value=""></td>
-            <td><input type="text" value=""></td>
+            <td><input type="text" value="" placeholder="Digite o RG" required></td>
+            <td><input type="text" value="" required></td>
+            <td><input type="date" value="" required></td>
+            <td><input type="text" value="" required></td>
+            <td><input type="text" value="" required></td>
             <td>
                 <select required class="exam-type">
                     <option value="Selecione">Selecione</option>
@@ -1048,16 +1096,16 @@
                     <option value="pontual">Atendimento Pontual</option>
                 </select>
             </td>
-            <td><input type="date" value="" class="admission-date"></td>
+            <td><input type="date" value="" required class="admission-date"></td>
             <td>
-                <select>
+                <select required>
                     <option value="Selecione">Selecione</option>
                     <option value="yes">Sim</option>
                     <option value="no">Não</option>
                 </select>
             </td>
             <td>
-                <select>
+                <select required>
                     <option value="Selecione">Selecione</option>
                     <option value="exames_aso">Exames + ASO</option>
                     <option value="apenas_exames">Apenas Exames</option>
@@ -1148,6 +1196,35 @@
             constructionFields.classList.remove('active');
         }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM fully loaded');
+        addCPFValidationListeners();
+        const cnpjInput = document.getElementById('cnpjInput');
+        if (cnpjInput) {
+            cnpjInput.addEventListener('input', () => formatCNPJ(cnpjInput));
+        } else {
+            console.error('cnpjInput not found');
+        }
+        toggleAdmissionDate();
+        const examTypes = document.querySelectorAll('.exam-type');
+        examTypes.forEach(select => {
+            select.addEventListener('change', toggleAdmissionDate);
+        });
+
+        // Add listener for unitSelect
+        const unitSelect = document.getElementById('unitSelect');
+        if (unitSelect) {
+            unitSelect.addEventListener('change', validateUnitSelection);
+            unitSelect.addEventListener('blur', validateUnitSelection);
+        } else {
+            console.error('unitSelect not found');
+        }
+
+        console.log('confirmPopup exists:', !!document.getElementById('confirmPopup'));
+        console.log('successPopup exists:', !!document.getElementById('successPopup'));
+        console.log('cpfErrorPopup exists:', !!document.getElementById('cpfErrorPopup'));
+    });
 </script>
 </body>
 </html>
